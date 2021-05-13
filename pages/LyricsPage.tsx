@@ -35,7 +35,7 @@ export default function LyricsPage() {
     }).start();
     setIsPlaying(true);
   };
-
+  // Function to stop song from playing
   const stopPlaying = () => {
     seekTime.stopAnimation();
     setIsPlaying(false);
