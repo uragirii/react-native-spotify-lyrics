@@ -22,7 +22,8 @@ export default function Lyrics({ text, style }: LyricsProps) {
 
 const styles = StyleSheet.create({
   text: {
-    fontSize: 18,
-    fontWeight: "bold",
+    fontSize: 22,
+    fontFamily: "Gotham-Medium",
+    paddingBottom: 5,
   },
 });
