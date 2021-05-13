@@ -1,0 +1,163 @@
+{
+  "lyrics": {
+    "provider": "Musixmatch",
+    "kind": "LINE",
+    "trackId": "37BZB0z9T8Xu7U3e65qxFy",
+    "lines": [
+      { "time": 1960, "words": [{ "string": "Ooh (ooh)" }] },
+      { "time": 5320, "words": [{ "string": "Nah-nah, yeah" }] },
+      {
+        "time": 8590,
+        "words": [{ "string": "I saw you dancing in a crowded room (uh)" }]
+      },
+      {
+        "time": 12730,
+        "words": [{ "string": "You look so happy when I'm not with you" }]
+      },
+      {
+        "time": 16560,
+        "words": [{ "string": "But then you saw me, caught you by surprise" }]
+      },
+      {
+        "time": 20840,
+        "words": [{ "string": "A single teardrop falling from your eye" }]
+      },
+      {
+        "time": 25080,
+        "words": [
+          { "string": "I don't know why I run away (oh, oh, oh, oh, oh)" }
+        ]
+      },
+      {
+        "time": 33430,
+        "words": [
+          { "string": "I'll make you cry when I run away (oh, oh, oh, oh, oh)" }
+        ]
+      },
+      {
+        "time": 41220,
+        "words": [{ "string": "Take me back 'cause I wanna stay" }]
+      },
+      { "time": 45340, "words": [{ "string": "Save your tears for another" }] },
+      {
+        "time": 48300,
+        "words": [
+          { "string": "Save your tears for another day (oh, oh, oh, oh, oh)" }
+        ]
+      },
+      {
+        "time": 56680,
+        "words": [{ "string": "Save your tears for another day (mm)" }]
+      },
+      {
+        "time": 65570,
+        "words": [{ "string": "Met you once under a Pisces moon" }]
+      },
+      {
+        "time": 69620,
+        "words": [{ "string": "I kept my distance 'cause I know that you" }]
+      },
+      {
+        "time": 73730,
+        "words": [{ "string": "Don't like when I'm with nobody else" }]
+      },
+      {
+        "time": 78020,
+        "words": [{ "string": "I couldn't help it, I put you through hell" }]
+      },
+      {
+        "time": 82310,
+        "words": [
+          { "string": "I don't know why I run away (run away, oh, oh, oh, oh)" }
+        ]
+      },
+      {
+        "time": 88690,
+        "words": [
+          {
+            "string": "Oh, boy, I'll make you cry when I run away (away, oh, oh, oh, oh)"
+          }
+        ]
+      },
+      { "time": 95520, "words": [{ "string": "♪" }] },
+      {
+        "time": 98010,
+        "words": [{ "string": "Boy, take me back 'cause I wanna stay" }]
+      },
+      {
+        "time": 102430,
+        "words": [{ "string": "Save your tears for another" }]
+      },
+      {
+        "time": 106070,
+        "words": [{ "string": "I realize that it's much too late" }]
+      },
+      {
+        "time": 110450,
+        "words": [{ "string": "And you deserve someone better" }]
+      },
+      {
+        "time": 113620,
+        "words": [
+          { "string": "Save your tears for another day (oh, oh, oh, oh, oh)" }
+        ]
+      },
+      {
+        "time": 121920,
+        "words": [
+          { "string": "Save your tears for another day (oh, oh, oh, oh, oh)" }
+        ]
+      },
+      {
+        "time": 131190,
+        "words": [
+          { "string": "I don't know why I run away (bum, bum, bum, bum, bum)" }
+        ]
+      },
+      {
+        "time": 139290,
+        "words": [{ "string": "I'll make you cry when I run away (save)" }]
+      },
+      {
+        "time": 146100,
+        "words": [{ "string": "Save your tears for another day (ooh)" }]
+      },
+      {
+        "time": 152230,
+        "words": [{ "string": "Ooh, girl (oh, oh, oh, oh, oh, okay)" }]
+      },
+      {
+        "time": 153860,
+        "words": [
+          {
+            "string": "I said save your tears for another day (oh, oh, oh, oh, oh)"
+          }
+        ]
+      },
+      {
+        "time": 162560,
+        "words": [
+          { "string": "Save your tears for another day (oh, oh, oh, oh, oh)" }
+        ]
+      },
+      {
+        "time": 170590,
+        "words": [
+          { "string": "Save your tears for another day (oh, oh, oh, oh, oh)" }
+        ]
+      },
+      {
+        "time": 178820,
+        "words": [{ "string": "Save your tears for another day" }]
+      },
+      { "time": 182380, "words": [{ "string": "♪" }] }
+    ],
+    "language": "en"
+  },
+  "has_vocal_removal": false,
+  "colors": {
+    "active_color": -1,
+    "dark_color": -696289,
+    "bright_color": -8966642
+  }
+}
