@@ -13,6 +13,7 @@ import {
 import Lyrics from "../components/Lyrics";
 import PlayButton from "../components/PlayButton";
 import ProgressBar from "../components/ProgressBar";
+import TimeStamps from "../components/TimeStamps";
 import LyricsData from "../lyricsData.json";
 // in miliseconds
 const SONG_LENGTH = 191000;
@@ -49,11 +50,12 @@ export default function LyricsPage() {
             shadowColor: "#000",
             shadowOffset: {
               width: 0,
-              height: 1,
+              height: 5,
             },
-            shadowOpacity: 0.22,
-            shadowRadius: 2.22,
-            elevation: 3,
+            shadowOpacity: 0.34,
+            shadowRadius: 6.27,
+
+            elevation: 10,
           }}
         >
           <Image
@@ -91,6 +93,10 @@ export default function LyricsPage() {
       </ScrollView>
       <View style={styles.bottomContainer}>
         <ProgressBar seekTime={seekTime} songLength={SONG_LENGTH} />
+        <TimeStamps
+          seekTime={seekTime}
+          totalTime={Math.floor(SONG_LENGTH / 1000)}
+        />
         <View style={styles.buttonContainer}>
           <PlayButton
             isPlaying={isPlaying}
