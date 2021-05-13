@@ -1,5 +1,5 @@
 import { StatusBar } from "expo-status-bar";
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
   ScrollView,
   StyleSheet,
@@ -11,6 +11,7 @@ import {
   useWindowDimensions,
 } from "react-native";
 import Lyrics from "./components/Lyrics";
+import PlayButton from "./components/PlayButton";
 import ProgressBar from "./components/ProgressBar";
 import LyricsData from "./lyricsData.json";
 
@@ -22,8 +23,25 @@ const ALBUM_ART =
   "https://i.scdn.co/image/ab67616d00001e02764ac25ee0d41190d513475a";
 
 export default function App() {
-  const seekTime = useRef(new Animated.Value(10000)).current;
+  const seekTime = useRef(new Animated.Value(0)).current;
+  const [isPlaying, setIsPlaying] = useState(false);
   const { height } = useWindowDimensions();
+
+  const startPlaying = () => {
+    Animated.timing(seekTime, {
+      toValue: SONG_LENGTH,
+      duration: SONG_LENGTH,
+      useNativeDriver: false,
+      easing: Easing.linear,
+    }).start();
+    setIsPlaying(true);
+  };
+
+  const stopPlaying = () => {
+    seekTime.stopAnimation();
+    setIsPlaying(false);
+  };
+
   return (
     <View style={styles.container}>
       <StatusBar style="auto" />
@@ -35,19 +53,7 @@ export default function App() {
             width: 0.1 * height,
           }}
         />
-        <Button
-          title="Start"
-          onPress={() => {
-            Animated.timing(seekTime, {
-              toValue: SONG_LENGTH,
-              duration: SONG_LENGTH,
-              useNativeDriver: false,
-              easing: Easing.linear,
-            }).start(() => {
-              console.log("Animation Started");
-            });
-          }}
-        >
+        <Button title="Start" onPress={() => {}}>
           Start
         </Button>
       </View>
@@ -73,6 +79,18 @@ export default function App() {
       </ScrollView>
       <View style={styles.bottomContainer}>
         <ProgressBar seekTime={seekTime} songLength={SONG_LENGTH} />
+        <View style={styles.buttonContainer}>
+          <PlayButton
+            isPlaying={isPlaying}
+            onPress={() => {
+              if (isPlaying) {
+                stopPlaying();
+              } else {
+                startPlaying();
+              }
+            }}
+          />
+        </View>
       </View>
     </View>
   );
@@ -104,5 +122,12 @@ const styles = StyleSheet.create({
     height: "20%",
     padding: "5%",
     width: "100%",
+  },
+  buttonContainer: {
+    width: "100%",
+    justifyContent: "center",
+    alignItems: "center",
+    display: "flex",
+    flex: 1,
   },
 });
