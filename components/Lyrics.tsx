@@ -1,5 +1,5 @@
 import React from "react";
-import { StyleProp, StyleSheet, Text, Animated } from "react-native";
+import { StyleProp, StyleSheet, Text, Animated, View } from "react-native";
 
 export interface LyricsProps {
   text: { string: string }[];
