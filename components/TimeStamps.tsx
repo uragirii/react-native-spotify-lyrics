@@ -1,12 +1,10 @@
 import React, { useEffect, useState } from "react";
-import { View, Text, Animated, StyleSheet } from "react-native";
+import { View, Text, StyleSheet } from "react-native";
+import Animated, { runOnJS, useDerivedValue } from "react-native-reanimated";
+import { SONG_LENGTH } from "../constants";
 
 interface TimeStampsProps {
-  seekTime: Animated.Value;
-  /**
-   * Total Time in SECONDS
-   */
-  totalTime: number;
+  seekTime: Animated.SharedValue<number>;
 }
 
 const secondToMinute = (seconds: number) => {
@@ -21,31 +19,33 @@ const formattedSeconds = (seconds: number) => {
   return onlySeconds;
 };
 
+const TotalTime = Math.floor(SONG_LENGTH / 1000);
+
 // This is component is created seperatly so that other components dont re-render
-export default function TimeStamps({ seekTime, totalTime }: TimeStampsProps) {
-  const [currentSeconds, setCurrentSeconds] = useState<number>(0);
-  const setSecond = ({ value }: { value: number }) => {
-    const second = Math.floor(value / 1000);
-    if (second > currentSeconds) {
-      setCurrentSeconds(second);
+export default function TimeStamps({ seekTime }: TimeStampsProps) {
+  const [currentTime, setCurrentTime] = useState(0);
+
+  const setCorrectTime = (milliseconds: number) => {
+    const seconds = Math.floor(milliseconds / 1000);
+    if (seconds !== currentTime) {
+      setCurrentTime(seconds);
     }
   };
 
-  useEffect(() => {
-    const id = seekTime.addListener(setSecond);
-    return () => {
-      seekTime.removeListener(id);
-    };
-  }, []);
+  useDerivedValue(() => {
+    runOnJS(setCorrectTime)(seekTime.value);
+  });
 
   return (
     <View style={styles.container}>
+      <Animated.Text style={styles.text}>{`${secondToMinute(
+        seekTime.value / 1000
+      )}:${formattedSeconds(
+        Math.floor(seekTime.value / 1000)
+      )}`}</Animated.Text>
       <Text style={styles.text}>{`${secondToMinute(
-        currentSeconds
-      )}:${formattedSeconds(currentSeconds)}`}</Text>
-      <Text style={styles.text}>{`${secondToMinute(
-        totalTime
-      )}:${formattedSeconds(totalTime)}`}</Text>
+        TotalTime
+      )}:${formattedSeconds(TotalTime)}`}</Text>
     </View>
   );
 }

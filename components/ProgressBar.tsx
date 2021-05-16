@@ -1,8 +1,12 @@
 import React from "react";
-import { Animated, Easing, StyleSheet, Text, View } from "react-native";
+import { StyleSheet, View } from "react-native";
+import Animated, {
+  useAnimatedStyle,
+  useDerivedValue,
+} from "react-native-reanimated";
 
 interface ProgressBarProps {
-  seekTime: Animated.Value;
+  seekTime: Animated.SharedValue<number>;
   songLength: number;
 }
 
@@ -10,19 +14,20 @@ export default function ProgressBar({
   seekTime,
   songLength,
 }: ProgressBarProps) {
+  const progress = useDerivedValue(() => {
+    return (seekTime.value / songLength) * 100;
+  }, []);
+
+  const progressBarStyles = useAnimatedStyle(() => {
+    return {
+      width: `${progress.value}%`,
+    };
+  });
+
   return (
     <View style={styles.progressBarContainer}>
       <Animated.View
-        style={[
-          styles.progressBar,
-          {
-            width: seekTime.interpolate({
-              inputRange: [0, songLength],
-              outputRange: ["0%", "100%"],
-              easing: Easing.linear,
-            }),
-          },
-        ]}
+        style={[styles.progressBar, progressBarStyles]}
       ></Animated.View>
     </View>
   );

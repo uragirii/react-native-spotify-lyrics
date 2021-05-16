@@ -2,86 +2,87 @@ import { LinearGradient } from "expo-linear-gradient";
 import { StatusBar } from "expo-status-bar";
 import React, { useEffect, useRef, useState } from "react";
 import {
-  ScrollView,
   StyleSheet,
   View,
-  Animated,
   Text,
-  Easing,
   Image,
   useWindowDimensions,
-  PixelRatio,
 } from "react-native";
 import Lyrics from "../components/Lyrics";
 import PlayButton from "../components/PlayButton";
 import ProgressBar from "../components/ProgressBar";
 import TimeStamps from "../components/TimeStamps";
 import LyricsData from "../lyricsData.json";
-// in miliseconds
-const SONG_LENGTH = 191000;
-const SONG_BG_COLOR = "#D63A12";
-const DARK_LYRICS_COLOR = "#772E0E";
-const ALBUM_ART =
-  "https://i.scdn.co/image/ab67616d00001e02764ac25ee0d41190d513475a";
+import Animated, {
+  cancelAnimation,
+  Easing,
+  useAnimatedStyle,
+  useDerivedValue,
+  useSharedValue,
+  withSpring,
+  withTiming,
+} from "react-native-reanimated";
+import { ALBUM_ART, SONG_BG_COLOR, SONG_LENGTH, THRESHOLD } from "../constants";
 
 const AnimatedLinearGradient = Animated.createAnimatedComponent(LinearGradient);
 
 export default function LyricsPage() {
-  const seekTime = useRef(new Animated.Value(0)).current;
-  const [isPlaying, setIsPlaying] = useState(false);
-  const { height, width } = useWindowDimensions();
-  const scrollValue = useRef(new Animated.Value(0)).current;
+  const { height } = useWindowDimensions();
+  const seekTime = useSharedValue(0);
+  const isPlaying = useSharedValue(false);
+
   const [heights, setHeights] = useState<number[]>(
     new Array(LyricsData.lyrics.lines.length).fill(0)
   );
-  const [progress, setProgress] = useState(0);
+
+  const lyricsScrollValue = useDerivedValue(() => {
+    const sumOfHeights = (index: number) => {
+      let sum = 0;
+      for (let i = 0; i < index; ++i) {
+        sum += heights[i];
+      }
+      return sum;
+    };
+    if (seekTime.value < LyricsData.lyrics.lines[0].time - THRESHOLD) {
+      return 0;
+    }
+    // Don't go till last. or the screen would be left empty
+    for (let index = 1; index < LyricsData.lyrics.lines.length - 2; index++) {
+      const currTime = LyricsData.lyrics.lines[index].time;
+      const lastTime = LyricsData.lyrics.lines[index - 1].time;
+      if (seekTime.value > lastTime && seekTime.value < currTime - THRESHOLD) {
+        return sumOfHeights(index - 1);
+      } else if (seekTime.value < currTime) {
+        return withTiming(sumOfHeights(index), {
+          duration: THRESHOLD,
+          easing: Easing.quad,
+        });
+      }
+    }
+    return sumOfHeights(LyricsData.lyrics.lines.length - 2);
+  }, [heights]);
+
+  const scrollViewStyle = useAnimatedStyle(() => {
+    return {
+      transform: [{ translateY: -lyricsScrollValue.value }],
+    };
+  });
 
   const startPlaying = () => {
-    const seekTimeAnimation = Animated.timing(seekTime, {
-      toValue: SONG_LENGTH,
+    "worklet";
+    isPlaying.value = true;
+    seekTime.value = withTiming(SONG_LENGTH, {
       duration: SONG_LENGTH,
-      useNativeDriver: false,
       easing: Easing.linear,
     });
-    let prevTime = 0;
-
-    const animations: Animated.CompositeAnimation[] = [];
-
-    for (let index = 0; index < LyricsData.lyrics.lines.length; index++) {
-      const { time } = LyricsData.lyrics.lines[index];
-      // Animation should start 100ms before the actual time and end in 100ms
-      // Delay of each animation = (time- prevTime)-100
-      const delay = time - prevTime - 100;
-      console.log(`Index ${index} ==> ${-heights[index]} with delay ${delay}`);
-      const animation = Animated.timing(scrollValue, {
-        toValue: -heights[index],
-        duration: 100,
-        easing: Easing.linear,
-        useNativeDriver: false,
-      });
-
-      animations.push(animation);
-    }
-    const scrollValueAnimation = Animated.sequence(animations);
-    Animated.parallel([seekTimeAnimation, scrollValueAnimation]).start();
-    setIsPlaying(true);
   };
   // Function to stop song from playing
   const stopPlaying = () => {
-    seekTime.stopAnimation();
-    setIsPlaying(false);
+    "worklet";
+    // TODO add logic for pausing the animation
+    isPlaying.value = false;
+    cancelAnimation(seekTime);
   };
-
-  useEffect(() => {
-    const id = seekTime.addListener(({ value }) => {
-      if (!isPlaying) {
-        setProgress(value);
-      }
-    });
-    return () => {
-      seekTime.removeListener(id);
-    };
-  }, []);
 
   useEffect(() => {
     // Check if all the heights are greater than zero or else quit early;
@@ -125,17 +126,7 @@ export default function LyricsPage() {
       </View>
       <AnimatedLinearGradient
         colors={[SONG_BG_COLOR, "transparent"]}
-        style={[
-          styles.topGradientStyle,
-          {
-            opacity: scrollValue.interpolate({
-              inputRange: [0, 5],
-              outputRange: [0, 1],
-              extrapolate: "clamp",
-              easing: Easing.linear,
-            }),
-          },
-        ]}
+        style={[styles.topGradientStyle, { opacity: 0 }]}
       />
       <Animated.ScrollView
         style={styles.scrollvView}
@@ -143,15 +134,7 @@ export default function LyricsPage() {
         showsVerticalScrollIndicator={false}
         scrollEnabled={false}
       >
-        <Animated.View
-          style={{
-            transform: [
-              {
-                translateY: scrollValue,
-              },
-            ],
-          }}
-        >
+        <Animated.View style={scrollViewStyle}>
           {LyricsData.lyrics.lines.map((line, index) => {
             return (
               <View
@@ -171,16 +154,7 @@ export default function LyricsPage() {
                   });
                 }}
               >
-                <Lyrics
-                  text={line.words}
-                  style={{
-                    color: seekTime.interpolate({
-                      inputRange: [line.time, line.time + 100],
-                      outputRange: [DARK_LYRICS_COLOR, "white"],
-                      extrapolate: "clamp",
-                    }),
-                  }}
-                />
+                <Lyrics data={line} seekTime={seekTime} />
               </View>
             );
           })}
@@ -193,15 +167,12 @@ export default function LyricsPage() {
       />
       <View style={styles.bottomContainer}>
         <ProgressBar seekTime={seekTime} songLength={SONG_LENGTH} />
-        <TimeStamps
-          seekTime={seekTime}
-          totalTime={Math.floor(SONG_LENGTH / 1000)}
-        />
+        <TimeStamps seekTime={seekTime} />
         <View style={styles.buttonContainer}>
           <PlayButton
             isPlaying={isPlaying}
             onPress={() => {
-              if (isPlaying) {
+              if (isPlaying.value) {
                 stopPlaying();
               } else {
                 startPlaying();
