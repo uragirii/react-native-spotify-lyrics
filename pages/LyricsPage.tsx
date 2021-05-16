@@ -30,6 +30,7 @@ export default function LyricsPage() {
   const { height } = useWindowDimensions();
   const seekTime = useSharedValue(0);
   const isPlaying = useSharedValue(false);
+  const halfScrollComponentHeight = 0.3 * height;
 
   const [heights, setHeights] = useState<number[]>(
     new Array(LyricsData.lyrics.lines.length).fill(0)
@@ -63,8 +64,29 @@ export default function LyricsPage() {
   }, [heights]);
 
   const scrollViewStyle = useAnimatedStyle(() => {
+    // In spotify the scroll happens only after half of the screen
     return {
-      transform: [{ translateY: -lyricsScrollValue.value }],
+      transform: [
+        {
+          translateY:
+            lyricsScrollValue.value > halfScrollComponentHeight
+              ? -lyricsScrollValue.value + halfScrollComponentHeight
+              : 0,
+        },
+      ],
+    };
+  });
+
+  const topGradientStyle = useAnimatedStyle(() => {
+    if (lyricsScrollValue.value > halfScrollComponentHeight) {
+      return {
+        opacity: withTiming(1, {
+          duration: 300,
+        }),
+      };
+    }
+    return {
+      opacity: 0,
     };
   });
 
@@ -126,7 +148,7 @@ export default function LyricsPage() {
       </View>
       <AnimatedLinearGradient
         colors={[SONG_BG_COLOR, "transparent"]}
-        style={[styles.topGradientStyle, { opacity: 0 }]}
+        style={[styles.topGradientStyle, topGradientStyle]}
       />
       <Animated.ScrollView
         style={styles.scrollvView}
